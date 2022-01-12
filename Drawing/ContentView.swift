@@ -24,9 +24,38 @@ struct Arrow: Shape {
     }
 }
 
+struct ColorCyclingRectangle: View {
+    var amount = 0.0
+    var steps = 100
+    
+    var body: some View {
+        ZStack {
+            ForEach(0..<steps) {
+                value in
+                Rectangle()
+                    .inset(by: CGFloat(value))
+                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [self.color(for: value, brightness: 1), self.color(for: value, brightness: 0.5)]), startPoint: .top, endPoint: .bottom), lineWidth: 2)
+            }
+        }
+        .drawingGroup()
+    }
+    
+    func color(for value: Int, brightness: Double) -> Color {
+        var targetHue = Double(value) / Double(self.steps) + self.amount
+        
+        if targetHue > 1 {
+            targetHue -= 1
+        }
+        
+        return Color(hue: targetHue, saturation: 1, brightness: brightness)
+    }
+    
+}
+
 struct ContentView: View {
     @State private var lineThickness = 5.0
     @State private var isShowThickLine = false
+    @State private var colorCycle = 0.0
     
     var body: some View {
         NavigationView {
@@ -38,8 +67,15 @@ struct ContentView: View {
                         withAnimation {
                             self.isShowThickLine.toggle()
                         }
-                    }
+                    }.padding(.bottom, 225)
                 Spacer()
+                
+                ColorCyclingRectangle(amount: self.colorCycle)
+                    .frame(width: 250, height: 250)
+                
+                Slider(value: $colorCycle)
+                    .padding(.bottom, 175)
+                
             }
         }
     }
