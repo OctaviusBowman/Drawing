@@ -13,8 +13,8 @@ struct Arrow: Shape {
         
         path.move(to: CGPoint(x: rect.midX, y: rect.midY))
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY/1.33333))
-        path.addLine(to: CGPoint(x: rect.midX / 1.25, y: rect.midY / 0.66666))
-        path.addLine(to: CGPoint(x: rect.midX / 1.25, y: rect.maxY / 0.75))
+        path.addLine(to: CGPoint(x: rect.midX / 1.4, y: rect.midY / 0.66666))
+        path.addLine(to: CGPoint(x: rect.midX / 1.4, y: rect.maxY / 0.75))
         path.addLine(to: CGPoint(x: rect.maxX / 1.5, y: rect.maxY / 0.75))
         path.addLine(to: CGPoint(x: rect.maxX / 1.5, y: rect.midY / 0.66666))
         path.addLine(to: CGPoint(x: rect.maxX , y: rect.midY / 0.66666))
@@ -25,13 +25,20 @@ struct Arrow: Shape {
 }
 
 struct ContentView: View {
+    @State private var lineThickness = 5.0
+    @State private var isShowThickLine = false
     
     var body: some View {
         NavigationView {
             VStack {
                 Arrow()
-                    .stroke(Color.red, style: StrokeStyle(lineWidth: 10.0, lineCap: .round, lineJoin: .round))
+                    .stroke(Color.red, style: StrokeStyle(lineWidth: self.isShowThickLine ? 20.0 : self.lineThickness, lineCap: .round, lineJoin: .round))
                     .frame(width: 150, height: 350)
+                    .onTapGesture {
+                        withAnimation {
+                            self.isShowThickLine.toggle()
+                        }
+                    }
                 Spacer()
             }
         }
